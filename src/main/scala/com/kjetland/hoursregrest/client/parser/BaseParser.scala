@@ -13,7 +13,7 @@ import util.matching.Regex
 abstract class BaseParser{
   protected def findMainPartRegex : Regex
 
-  def parse(html: String): Option[String] = {
+  protected def parseMainPart(html: String): Option[String] = {
 
     val _findMainPartRegex = this.findMainPartRegex
 

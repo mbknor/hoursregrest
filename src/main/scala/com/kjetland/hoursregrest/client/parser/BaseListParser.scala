@@ -12,21 +12,18 @@ import collection.mutable.ListBuffer
  * To change this template use File | Settings | File Templates.
  */
 
-abstract class BaseListParser[T] {
+abstract class BaseListParser[T] extends BaseParser {
 
-  protected def findMainPartRegex : Regex
   protected def partSplitter = """\r?\n"""
 
   def parse(html: String): List[T] = {
 
-    val _findMainPartRegex = this.findMainPartRegex
     val _partSplitter = this.partSplitter
 
     val list = new ListBuffer[T]
 
-    html match {
-      case _findMainPartRegex (_sc) => {
-        val mainPart = _sc.trim
+    parseMainPart( html ) match {
+      case Some( mainPart ) => {
 
         //println("mainPart: \n"+mainPart)
 
@@ -41,7 +38,7 @@ abstract class BaseListParser[T] {
         })
 
       }
-      case none => false
+      case _ => None
     }
 
     list.toList;
