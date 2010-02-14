@@ -1,6 +1,8 @@
 package com.kjetland.hoursregrest.client.parser
 
 import org.junit.Test
+import java.text.SimpleDateFormat
+import com.kjetland.hoursregrest.client.model.Registration
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,6 +35,12 @@ class RegistrationParserTest{
 
 	</div>"""
 
-    RegistrationParser.parse(html)
+    val list = RegistrationParser.parse(html)
+
+    
+    
+
+
+    list.foreach( println( _ ))
   }
 }

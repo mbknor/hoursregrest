@@ -2,6 +2,7 @@ package com.kjetland.hoursregrest.client.parser
 
 import com.kjetland.hoursregrest.client.model.Registration
 import java.text.SimpleDateFormat
+import org.joda.time.format.DateTimeFormat
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,10 +49,8 @@ object RegistrationParser extends BaseParser[Registration]{
 
             case parseOption( date, hours, customer, projectName, activity, description, price, amount) => {
 
-              val sdf = new SimpleDateFormat("dd.MM.yyyy");
-              
               val reg = new Registration(
-                sdf.parse(date),
+                DateTimeFormat.forPattern("dd.MM.yyyy").parseDateTime(date),
                 hours.toDouble,
                 customer,
                 projectName,
