@@ -29,6 +29,12 @@ object App{
       println(_)
     }
 
+    println("registrations:")
+    client.registrations.get.foreach{
+      println(_)
+    }
+    
+
     
 //    val projects = client.getProjects
 //    println("Projects: ")

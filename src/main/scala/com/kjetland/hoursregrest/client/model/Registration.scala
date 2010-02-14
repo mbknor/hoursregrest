@@ -21,7 +21,18 @@ class Registration(
         val price: Double,
         val amount: Double
         ) {
-  
+
+  override def equals(obj: Any) = {
+    obj match{
+      case o : Registration => {
+        val e = date == o.date && hours == o.hours && customer == o.customer && projectName == o.projectName &&
+          activity == o.activity && description == o.description && price == o.price && amount == o.amount;
+        e
+      }
+      case _ => false
+    }
+  }
+
   override def toString =
     "date: " + date +
             ". hours: " + hours +

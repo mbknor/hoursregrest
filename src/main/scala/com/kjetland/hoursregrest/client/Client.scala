@@ -1,8 +1,7 @@
 package com.kjetland.hoursregrest.client
 
-import model.Project
-import parser.ProjectsParser
-
+import model.{Registration, Project}
+import parser.{RegistrationParser, ProjectsParser}
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,6 +25,15 @@ class Client(
       case None => None
       case Some( x ) => {
         Some( ProjectsParser.parse( x ) )
+      }
+    }
+  }
+
+  def registrations : Option[List[Registration]] = {
+    html match {
+      case None => None
+      case Some( x ) => {
+        Some( RegistrationParser.parse(x))
       }
     }
   }

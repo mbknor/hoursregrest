@@ -1,8 +1,9 @@
 package com.kjetland.hoursregrest.client.parser
 
-import org.junit.Test
 import java.text.SimpleDateFormat
 import com.kjetland.hoursregrest.client.model.Registration
+import org.joda.time.format.DateTimeFormat
+import org.junit.{Assert, Test}
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,10 +14,9 @@ import com.kjetland.hoursregrest.client.model.Registration
  */
 
 @Test
-class RegistrationParserTest{
-
+class RegistrationParserTest {
   @Test
-  def test{
+  def test {
     var html = """</table>
 			<div id="pnlIkkeGodkjent">
 
@@ -35,12 +35,61 @@ class RegistrationParserTest{
 
 	</div>"""
 
+    val fasit = List(
+      new Registration(
+        DateTimeFormat.forPattern("yyyyMMdd").parseDateTime("20100202"),
+        1.5,
+        "firma1 as",
+        "Diverse",
+        "Ferie",
+        "test 2",
+        0.0,
+        0.0
+        ),
+      new Registration(
+        DateTimeFormat.forPattern("yyyyMMdd").parseDateTime("20100201"),
+        1.0,
+        "firma2 as",
+        "Diverse",
+        "Ferie",
+        "test",
+        0.0,
+        0.0
+        ))
+
+
     val list = RegistrationParser.parse(html)
 
-    
-    
+    //list.foreach(println(_))
+    //fasit.foreach(println(_))
 
 
-    list.foreach( println( _ ))
+    Assert.assertEquals(fasit, list)
+
+  }
+
+  @Test
+  def testNotFound() {
+    var html = """</table>
+			<div id="pnlIkkeGodkjent">
+
+    			<table cellspacing="0" cellpadding="3" rules="cols" bordercolor="#40637A" border="1" id="dg_XXXX_IkkeGodkjent" bgcolor="White" width="750">
+			<tr bgcolor="#40637A">
+				<td><font color="White"><b>  </b></font></td><td><font color="White"><b><a href="javascript:__doPostBack('dgIkkeGodkjent$_ctl1$_ctl0','')"><font color="White">Dato</font></a></b></font></td><td align="right"><font color="White"><b><a href="javascript:__doPostBack('dgIkkeGodkjent$_ctl1$_ctl1','')"><font color="White">Timer</font></a></b></font></td><td><font color="White"><b><a href="javascript:__doPostBack('dgIkkeGodkjent$_ctl1$_ctl2','')"><font color="White">Kunde</font></a></b></font></td><td><font color="White"><b><a href="javascript:__doPostBack('dgIkkeGodkjent$_ctl1$_ctl3','')"><font color="White">Prosjekt</font></a></b></font></td><td><font color="White"><b><a href="javascript:__doPostBack('dgIkkeGodkjent$_ctl1$_ctl4','')"><font color="White">Aktivitet</font></a></b></font></td><td><font color="White"><b><a href="javascript:__doPostBack('dgIkkeGodkjent$_ctl1$_ctl5','')"><font color="White">Beskrivelse</font></a></b></font></td><td align="right"><font color="White"><b><a href="javascript:__doPostBack('dgIkkeGodkjent$_ctl1$_ctl6','')"><font color="White">Timepris</font></a></b></font></td><td align="right"><font color="White"><b><a href="javascript:__doPostBack('dgIkkeGodkjent$_ctl1$_ctl7','')"><font color="White">BelÃ¸p</font></a></b></font></td>
+			</tr><tr bgcolor="WhiteSmoke">
+				<td><font color="Black"><a href="javascript:__doPostBack('dgIkkeGodkjent$_ctl2$_ctl0','')"><font color="Black">Slett</font></a></font></td><td><font color="Black">02.02.2010</font></td><td align="right"><font color="Black">1.50</font></td><td><font color="Black">firma1 as</font></td><td><font color="Black">Diverse</font></td><td><font color="Black">Ferie</font></td><td><font color="Black">test 2</font></td><td align="right"><font color="Black">0</font></td><td align="right"><font color="Black">0.00</font></td>
+			</tr><tr bgcolor="Gainsboro">
+				<td><font color="Black"><a href="javascript:__doPostBack('dgIkkeGodkjent$_ctl3$_ctl0','')"><font color="Black">Slett</font></a></font></td><td><font color="Black">01.02.2010</font></td><td align="right"><font color="Black">1.00</font></td><td><font color="Black">firma2 as</font></td><td><font color="Black">Diverse</font></td><td><font color="Black">Ferie</font></td><td><font color="Black">test</font></td><td align="right"><font color="Black">0</font></td><td align="right"><font color="Black">0.00</font></td>
+			</tr><tr bgcolor="#CCCCCC">
+				<td><font color="Black"><b>Totalt</b></font></td><td><font color="Black">&nbsp;</font></td><td align="right"><font color="Black"><b>2.50</b></font></td><td><font color="Black">&nbsp;</font></td><td><font color="Black">&nbsp;</font></td><td><font color="Black">&nbsp;</font></td><td><font color="Black">&nbsp;</font></td><td><font color="Black">&nbsp;</font></td><td align="right"><font color="Black"><b>0.00</b></font></td>
+			</tr>
+		</table>
+			<input type="submit" name="btnGodkjenn" value="Godkjenn" id="btnGodkjenn" />
+
+	</div>"""
+
+
+    Assert.assertTrue(RegistrationParser.parse( html ).isEmpty )
+
   }
 }

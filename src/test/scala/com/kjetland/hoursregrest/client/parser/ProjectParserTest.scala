@@ -36,4 +36,21 @@ class ProjectParserTest{
     Assert.assertEquals(fasit, ProjectsParser.parse( html ) )
 
   }
+
+  @Test
+  def testNotFound(){
+    val html = """<TD style="WIDTH: 365px" colSpan="2">
+							<select name="dlst___XXXX__ProsjektAktivitet" id="dlstProsjektAktivitet">
+			<option selected="selected" value="-">-</option>
+			<option value="1">aaa</option>
+			<option value="2">bbb</option>
+			<option value="3">ccc</option>
+			<option value="4">ddd</option>
+
+		</select></TD>"""
+
+
+    Assert.assertTrue(ProjectsParser.parse( html ).isEmpty )
+
+  }
 }
