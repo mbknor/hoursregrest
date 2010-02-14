@@ -1,0 +1,8 @@
+just a really early version of a project planing to implement
+a rest-interface to a hours-registration web system i use.
+
+I'm writing it in Scala and it all should build using maven.
+
+I develop in IntelliJ community edition
+
+more info to come in the future...
