@@ -1,7 +1,8 @@
 package com.kjetland.hoursregrest.client
 
 import model.{Registration, Project}
-import parser.{RegistrationParser, ProjectsParser}
+import org.joda.time.DateTime
+import parser.{SelectedDateParser, RegistrationParser, ProjectsParser}
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,6 +20,7 @@ class Client(
   //we can parse it later
 
   val html = browser.get( url );
+  //println(html)
 
   def projects : Option[List[Project]] = {
     html match{
@@ -34,6 +36,15 @@ class Client(
       case None => None
       case Some( x ) => {
         Some( RegistrationParser.parse(x))
+      }
+    }
+  }
+
+  def selectedDate : Option[DateTime] = {
+    html match {
+      case None => None
+      case Some( x ) => {
+        SelectedDateParser.parse(x)
       }
     }
   }

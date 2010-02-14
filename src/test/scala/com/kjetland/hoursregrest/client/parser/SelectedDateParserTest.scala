@@ -1,14 +1,25 @@
 package com.kjetland.hoursregrest.client.parser
 
+import org.joda.time.format.DateTimeFormat
+import org.junit.{Assert, Test}
+
 /**
  * Created by IntelliJ IDEA.
  * User: morten
  * Date: 14.feb.2010
- * Time: 20:38:15
+ * Time: 21:39:14
  * To change this template use File | Settings | File Templates.
  */
 
-/*
+@Test
+class SelectedDateParserTest{
+
+  @Test
+  def test(){
+
+    Assert.fail("html from HttpClient does not contain style like this  - needs to resolve this issue")
+
+    val html = """
 <TD style="WIDTH: 365px" vAlign="top">
 							<table id="Calendar1" cellspacing="0" cellpadding="2" title="Calendar" border="0" style="border-width:1px;border-style:solid;border-collapse:collapse;">
 
@@ -20,6 +31,9 @@ package com.kjetland.hoursregrest.client.parser
 						<TD vAlign="top">
 
 
- */
+ """ 
 
-object SelectedTimeParser
+    val date = DateTimeFormat.forPattern("yyyyMMdd").parseDateTime("20100207")
+    Assert.assertEquals( date, SelectedDateParser.parse( html ).get)
+  }
+}

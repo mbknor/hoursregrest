@@ -33,6 +33,8 @@ object App{
     client.registrations.get.foreach{
       println(_)
     }
+
+    println("selectedDate: " + client.selectedDate)
     
 
     
