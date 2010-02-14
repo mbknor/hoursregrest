@@ -12,7 +12,7 @@ import util.matching.Regex
  * To change this template use File | Settings | File Templates.
  */
 
-object ProjectsParser extends BaseParser[Project]{
+object ProjectsParser extends BaseListParser[Project]{
 
   def findMainPartRegex = """(?s).+<select name="dlstProsjektAktivitet" id="dlstProsjektAktivitet">(.+)</select>.+""".r
 

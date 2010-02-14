@@ -27,7 +27,7 @@ import org.joda.time.format.DateTimeFormat
 
  */
 
-object RegistrationParser extends BaseParser[Registration]{
+object RegistrationParser extends BaseListParser[Registration]{
 
   def findMainPartRegex = """(?s).+<table [^>]+ id="dgIkkeGodkjent" [^>]+>(.+)</table>.+""".r
 
