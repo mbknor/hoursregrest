@@ -25,19 +25,18 @@ import org.joda.time.DateTime
 
  */
 
-//TODO: html read via HttpClient is missing all style info - Parsing then does not work
 object SelectedDateParser extends BaseParser {
-  def findMainPartRegex = """(?s).+<table id="Calendar1" cellspacing="0" cellpadding="2" title="Calendar" border="0">(.+)</table>.+""".r
+  def findMainPartRegex = """(?s).+<table id="Calendar1" cellspacing="0" cellpadding="2" title="Calendar" border="0" style="border-width:1px;border-style:solid;border-collapse:collapse;">(.+)<STRONG>&nbsp;</STRONG>.+""".r
 
   def parse(html: String): Option[DateTime] = {
 
-    val findYearAndMonth = """(?s).+ title="Go to the previous month">\&lt\;</a></td><td align="center" style="width:70\%;">(\w+) (\d+)</td>.+""".r
+    val findYearAndMonth  = """(?s).+ title="Go to the previous month">\&lt;</a></td><td align="center" style="width\:70\%;">(\w+) (\d+)</td>.+""".r
 
-    println("html: " + html)
+    //println("html: " + html)
 
     parseMainPart(html) match {
       case Some(mainPart) => {
-        //println( mainPart )
+        //println( "mainPart: " + mainPart )
         //Go to the previous month">&lt;</a></td><td align="center" style="width:70%;">February 2010</td>
 
         mainPart match {
@@ -45,7 +44,7 @@ object SelectedDateParser extends BaseParser {
             //println("month: " + month + ". year: " + year)
 
             val findDay = """(?s).+<td align="center" style="color\:White;background-color\:Silver;width\:14\%;"><a href="javascript\:\_\_doPostBack\('Calendar1','\d+'\)" style="color\:White" title=".+">(\d+)</a></td>.+""".r
-            println("mainPartx: "+mainPart)
+            //println("mainPartx: "+mainPart)
             mainPart match {
               case findDay(day) => {
 

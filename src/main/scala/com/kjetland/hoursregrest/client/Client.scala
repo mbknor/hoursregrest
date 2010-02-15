@@ -40,6 +40,9 @@ class Client(
     }
   }
 
+  /**
+   * before a date is selected manually, no selected date can be returned
+   */
   def selectedDate : Option[DateTime] = {
     html match {
       case None => None

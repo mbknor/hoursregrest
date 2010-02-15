@@ -12,6 +12,8 @@ import java.io.FileInputStream
 object App{
   def main(args: Array[String]) {
 
+    //System.getProperties().put("socksProxyHost", "localhost")
+
     val props = new Properties();
     props.load( new FileInputStream("ignoredFiles/settings.properties"))
 
