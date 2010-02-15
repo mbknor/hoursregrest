@@ -1,0 +1,3 @@
+info about how to perform a click to select date:
+
+http://aspalliance.com/895_Understanding_the_JavaScript___doPostBack_Function.all
