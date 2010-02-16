@@ -2,7 +2,7 @@ package com.kjetland.hoursregrest.client
 
 import model.{Registration, Project}
 import org.joda.time.DateTime
-import parser.{SelectedDateParser, RegistrationParser, ProjectsParser}
+import parser._
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,6 +19,7 @@ class Client(
   var projects : List[Project] = List()
   var registrations : List[Registration] = List()
   var selectedDate : Option[DateTime] = None
+  private var formElements : List[FormElement] = List()
 
   //retrieve html and store it so
   //we can parse it later
@@ -42,11 +43,14 @@ class Client(
   private def parse(){
     html match{
       case None => None
-      case Some( x ) => {
-        projects = ProjectsParser.parse( x )
-        registrations = RegistrationParser.parse(x)
+      case Some( html ) => {
+        projects = ProjectsParser.parse( html )
+        registrations = RegistrationParser.parse(html)
         //before a date is selected manually, no selected date can be returned
-        selectedDate = SelectedDateParser.parse(x)
+        selectedDate = SelectedDateParser.parse(html)
+
+        //must get hold of form-elements - need them when posting
+        formElements = FormParser.parse(html)
       }
     }
   }
