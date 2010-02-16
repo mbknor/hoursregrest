@@ -27,12 +27,12 @@ object App{
     val client = new Client( url, browser )
 
     println("projects:")
-    client.projects.get.foreach{
+    client.projects.foreach{
       println(_)
     }
 
     println("registrations:")
-    client.registrations.get.foreach{
+    client.registrations.foreach{
       println(_)
     }
 

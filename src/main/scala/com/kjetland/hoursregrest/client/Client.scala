@@ -16,40 +16,40 @@ class Client(
         url : String,
         browser : Browser){
 
+  var projects : List[Project] = List()
+  var registrations : List[Registration] = List()
+  var selectedDate : Option[DateTime] = None
+
   //retrieve html and store it so
   //we can parse it later
 
-  val html = browser.get( url );
+  var html : Option[String] = None
   //println(html)
 
-  def projects : Option[List[Project]] = {
+  //init code...
+  load()
+
+  private def load(){
+
+    //do we have html?
+    html match {
+      case None => html = browser.get( url )
+      case Some(x) => None //do nothing - we allready have the html
+    }
+    parse()
+  }
+
+  private def parse(){
     html match{
       case None => None
       case Some( x ) => {
-        Some( ProjectsParser.parse( x ) )
+        projects = ProjectsParser.parse( x )
+        registrations = RegistrationParser.parse(x)
+        //before a date is selected manually, no selected date can be returned
+        selectedDate = SelectedDateParser.parse(x)
       }
     }
   }
 
-  def registrations : Option[List[Registration]] = {
-    html match {
-      case None => None
-      case Some( x ) => {
-        Some( RegistrationParser.parse(x))
-      }
-    }
-  }
-
-  /**
-   * before a date is selected manually, no selected date can be returned
-   */
-  def selectedDate : Option[DateTime] = {
-    html match {
-      case None => None
-      case Some( x ) => {
-        SelectedDateParser.parse(x)
-      }
-    }
-  }
 
 }
