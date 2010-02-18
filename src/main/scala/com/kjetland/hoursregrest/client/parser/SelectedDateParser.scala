@@ -3,6 +3,7 @@ package com.kjetland.hoursregrest.client.parser
 import exception.ParseException
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.DateTime
+import com.kjetland.hoursregrest.client.model.SelectedDate
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,31 +27,6 @@ import org.joda.time.DateTime
 
  */
 
-class SelectedDate(val year:Int, val month:Int){
-
-  private var day: Option[Int] = None
-
-  def setDay(day:Int){
-    this.day = Some(day)
-  }
-
-  def date:Option[DateTime] = {
-    day match{
-      case Some(day) => {
-        Some(new DateTime(year, month, day))
-      }
-      case None => None
-    }
-  }
-
-
-  override def equals(obj: Any) = {
-    obj match{
-      case o:SelectedDate => year==o.year && month==o.month && day == o.day 
-      case _ => false
-    }
-  }
-}
 
 object SelectedDateParser extends BaseParser {
   def findMainPartRegex = """(?s).+<table id="Calendar1" cellspacing="0" cellpadding="2" title="Calendar" border="0" style="border-width:1px;border-style:solid;border-collapse:collapse;">(.+)<STRONG>&nbsp;</STRONG>.+""".r
@@ -102,7 +78,7 @@ object SelectedDateParser extends BaseParser {
   /**
    * workaround:
    * I have problems parsing full month names with jodatime.
-   * This method returns the monthnumber for the monthname 
+   * This method returns the monthnumber for the monthname
    */
   protected def monthNameToNumber( name : String) : Int ={
     name.toLowerCase match{

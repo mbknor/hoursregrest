@@ -16,26 +16,19 @@ class SelectDateAction(client : Client, formElements : List[FormElement]){
 
   def selectDate(date : DateTime) {
 
-    //if no date is selected, just select the first day in current month
-    if( client.selectedDate == None){
-      println("no date is selected - select first day in current month")
-      selectDay(date.getDayOfMonth)
-      selectDate( date )
-      return ;
-    }
-
+    val sd = client.selectedDate
     //if date == current selected date, just return
-    if( client.selectedDate == date){
+    if( sd == date){
       return
     }
 
     
     //if year and month does not match we must call server and change it
+    if( !(sd.year == date.getYear && sd.month == date.getMonthOfYear) ){
+      throw new Exception("year and/or month does not match - handling not implemented yet")
+    }
 
-    //TODO: must be possible to find out which year and month is selected,
-    //even though now day is selected.
-    //solution: selectedDate returns SelectedDate-object instead, which
-    //holds year, month and day, and a resolved date if possible
+
     val currentYearMonth : DateTime = null
 
     val yearMonthCompare = compareYearAndMonth(date,  currentYearMonth)

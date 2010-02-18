@@ -1,6 +1,6 @@
 package com.kjetland.hoursregrest.client
 
-import model.{Registration, Project}
+import model.{SelectedDate, Registration, Project}
 import org.joda.time.DateTime
 import parser._
 

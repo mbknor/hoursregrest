@@ -2,6 +2,7 @@ package com.kjetland.hoursregrest.client.parser
 
 import org.joda.time.format.DateTimeFormat
 import org.junit.{Assert, Test}
+import com.kjetland.hoursregrest.client.model.SelectedDate
 
 /**
  * Created by IntelliJ IDEA.
