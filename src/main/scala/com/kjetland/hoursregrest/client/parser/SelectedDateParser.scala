@@ -25,14 +25,42 @@ import org.joda.time.DateTime
 
  */
 
+class SelectedDate(val year:Int, val month:Int){
+
+  private var day: Option[Int] = None
+
+  def setDay(day:Int){
+    this.day = Some(day)
+  }
+
+  def date:Option[DateTime] = {
+    day match{
+      case Some(day) => {
+        Some(new DateTime(year, month, day))
+      }
+      case None => None
+    }
+  }
+
+
+  override def equals(obj: Any) = {
+    obj match{
+      case o:SelectedDate => year==o.year && month==o.month && day == o.day 
+      case _ => false
+    }
+  }
+}
+
 object SelectedDateParser extends BaseParser {
   def findMainPartRegex = """(?s).+<table id="Calendar1" cellspacing="0" cellpadding="2" title="Calendar" border="0" style="border-width:1px;border-style:solid;border-collapse:collapse;">(.+)<STRONG>&nbsp;</STRONG>.+""".r
 
-  def parse(html: String): Option[DateTime] = {
+  def parse(html: String): Option[SelectedDate] = {
 
     val findYearAndMonth  = """(?s).+ title="Go to the previous month">\&lt;</a></td><td align="center" style="width\:70\%;">(\w+) (\d+)</td>.+""".r
-
+    
     //println("html: " + html)
+
+
 
     parseMainPart(html) match {
       case Some(mainPart) => {
@@ -41,6 +69,9 @@ object SelectedDateParser extends BaseParser {
 
         mainPart match {
           case findYearAndMonth(month, year) => {
+
+            val date = new SelectedDate(year.toInt, monthNameToNumber(month))
+
             //println("month: " + month + ". year: " + year)
 
             val findDay = """(?s).+<td align="center" style="color\:White;background-color\:Silver;width\:14\%;"><a href="javascript\:\_\_doPostBack\('Calendar1','\d+'\)" style="color\:White" title=".+">(\d+)</a></td>.+""".r
@@ -48,17 +79,13 @@ object SelectedDateParser extends BaseParser {
             mainPart match {
               case findDay(day) => {
 
-                //println("day: " + day)
-                val dateString = year + " " + day + " " + monthNameToNumber(month)
-      
-                val date = DateTimeFormat.forPattern("yyyy dd MM").parseDateTime( dateString)
-
-                return Some( date )
+                date.setDay( day.toInt )
 
               }
-              case _ => return None //didn't find it..
+              case _ => None //didn't find it..
             }
 
+            return Some(date)
             
           }
           case _ => return None //didn't find it..

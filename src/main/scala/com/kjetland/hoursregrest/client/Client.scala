@@ -18,7 +18,7 @@ class Client(
 
   var projects : List[Project] = List()
   var registrations : List[Registration] = List()
-  var selectedDate : Option[DateTime] = None
+  var selectedDate : Option[SelectedDate] = None
   private var formElements : List[FormElement] = List()
 
   //retrieve html and store it so

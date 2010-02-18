@@ -30,7 +30,8 @@ class SelectedDateParserTest{
 						<STRONG>&nbsp;</STRONG>
 								</TD>""" 
 
-    val date = DateTimeFormat.forPattern("yyyyMMdd").parseDateTime("20100207")
+    val date = new SelectedDate(2010, 2)
+    date.setDay(7)
     Assert.assertEquals( date, SelectedDateParser.parse( html ).get)
   }
 }
