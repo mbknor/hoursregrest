@@ -32,7 +32,7 @@ class SelectedDateParserTest{
 
     val date = new SelectedDate(2010, 2)
     date.setDay(7)
-    Assert.assertEquals( date, SelectedDateParser.parse( html ).get)
+    Assert.assertEquals( date, SelectedDateParser.parse( html ))
   }
 
   @Test
@@ -56,7 +56,7 @@ class SelectedDateParserTest{
 """
 
     val date = new SelectedDate(2010, 2)
-    Assert.assertEquals( date, SelectedDateParser.parse( html ).get)
+    Assert.assertEquals( date, SelectedDateParser.parse( html ))
   }
 
 }

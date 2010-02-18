@@ -1,5 +1,6 @@
 package com.kjetland.hoursregrest.client.parser
 
+import exception.ParseException
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.DateTime
 
@@ -54,7 +55,7 @@ class SelectedDate(val year:Int, val month:Int){
 object SelectedDateParser extends BaseParser {
   def findMainPartRegex = """(?s).+<table id="Calendar1" cellspacing="0" cellpadding="2" title="Calendar" border="0" style="border-width:1px;border-style:solid;border-collapse:collapse;">(.+)<STRONG>&nbsp;</STRONG>.+""".r
 
-  def parse(html: String): Option[SelectedDate] = {
+  def parse(html: String): SelectedDate = {
 
     val findYearAndMonth  = """(?s).+ title="Go to the previous month">\&lt;</a></td><td align="center" style="width\:70\%;">(\w+) (\d+)</td>.+""".r
     
@@ -85,14 +86,14 @@ object SelectedDateParser extends BaseParser {
               case _ => None //didn't find it..
             }
 
-            return Some(date)
+            return date
             
           }
-          case _ => return None //didn't find it..
+          case _ => throw new ParseException("Cannot find selected date in html") //didn't find it..
         }
 
       }
-      case _ => None
+      case _ => throw new ParseException("Cannot find selected date in html")
 
     }
 
