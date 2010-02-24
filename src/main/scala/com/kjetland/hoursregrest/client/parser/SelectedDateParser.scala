@@ -34,7 +34,7 @@ object SelectedDateParser extends BaseParser {
   def parse(html: String): SelectedDate = {
 
     // val findYearAndMonth  = """(?s).+ title="Go to the previous month">\&lt;</a></td><td align="center" style="width\:70\%;">(\w+) (\d+)</td>.+""".r
-    val findYearAndMonth  = """(?s).+ title="Go to the previous month".+>(\w+) (\d+)<.+""".r
+    val findYearAndMonth  = """(?s).+<font color="White">(\w+) (\d\d\d\d)</font>.+""".r
 
     //println("html: " + html)
 
