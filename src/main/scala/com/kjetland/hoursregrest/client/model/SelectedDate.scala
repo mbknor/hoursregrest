@@ -13,6 +13,7 @@ import org.joda.time.DateTime
 class SelectedDate(val year:Int, val month:Int){
 
   private var day: Option[Int] = None
+  private var _date : DateTime = null
 
   def this(date:DateTime){
     this(date.getYear, date.getMonthOfYear)
@@ -20,17 +21,13 @@ class SelectedDate(val year:Int, val month:Int){
   }
   
 
-  def setDay(day:Int){
-    this.day = Some(day)
+  def setDay(_day:Int){
+    this.day = Some(_day)
+    this._date = new DateTime(year, month, _day, 0,0,0,0)
   }
 
-  def date:Option[DateTime] = {
-    day match{
-      case Some(day) => {
-        Some(new DateTime(year, month, day))
-      }
-      case None => None
-    }
+  def date: DateTime = {
+    return _date
   }
 
 
@@ -63,4 +60,7 @@ class SelectedDate(val year:Int, val month:Int){
       case _ => -1
     }
   }
+
+
+  override def toString = "year: "+year+" month: " + month + "  day: " + day + " date: " + date
 }

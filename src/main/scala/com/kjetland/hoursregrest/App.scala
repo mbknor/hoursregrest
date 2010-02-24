@@ -1,9 +1,11 @@
 package com.kjetland.hoursregrest
 
+import client.parser.FormParser
 import client.{Client, Browser}
 import xml.XML
 import java.util.Properties
 import java.io.FileInputStream
+import org.joda.time.DateTime
 
 /**
  * Hello world!
@@ -36,9 +38,23 @@ object App{
       println(_)
     }
 
+    //println("html: " + client.html)
     println("selectedDate: " + client.selectedDate)
-    
 
+    /*
+    println("form elements:")
+    val formElements = FormParser.parse(client.html)
+    formElements.foreach{
+      println(_)
+    }
+    */
+
+    val date = new DateTime(2010, 2, 23, 0,0,0,0)
+    client.selectDate(date )
+
+
+
+    println("selectedDate: " + client.selectedDate)
     
 //    val projects = client.getProjects
 //    println("Projects: ")

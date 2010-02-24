@@ -29,12 +29,13 @@ import com.kjetland.hoursregrest.client.model.SelectedDate
 
 
 object SelectedDateParser extends BaseParser {
-  def findMainPartRegex = """(?s).+<table id="Calendar1" cellspacing="0" cellpadding="2" title="Calendar" border="0" style="border-width:1px;border-style:solid;border-collapse:collapse;">(.+)<STRONG>&nbsp;</STRONG>.+""".r
+  def findMainPartRegex = """(?s).+<table id="Calendar1" cellspacing="0" cellpadding="2" title="Calendar" border="0">(.+)<STRONG>&nbsp;</STRONG>.+""".r
 
   def parse(html: String): SelectedDate = {
 
-    val findYearAndMonth  = """(?s).+ title="Go to the previous month">\&lt;</a></td><td align="center" style="width\:70\%;">(\w+) (\d+)</td>.+""".r
-    
+    // val findYearAndMonth  = """(?s).+ title="Go to the previous month">\&lt;</a></td><td align="center" style="width\:70\%;">(\w+) (\d+)</td>.+""".r
+    val findYearAndMonth  = """(?s).+ title="Go to the previous month".+>(\w+) (\d+)<.+""".r
+
     //println("html: " + html)
 
 
@@ -51,7 +52,8 @@ object SelectedDateParser extends BaseParser {
 
             //println("month: " + month + ". year: " + year)
 
-            val findDay = """(?s).+<td align="center" style="color\:White;background-color\:Silver;width\:14\%;"><a href="javascript\:\_\_doPostBack\('Calendar1','\d+'\)" style="color\:White" title=".+">(\d+)</a></td>.+""".r
+            //val findDay = """(?s).+<td align="center" width="14%"><a href="javascript:__doPostBack\('Calendar1','\d+'\)" style="color:Black" title="(\d+) \w+">1</a></td>.+""".r
+            val findDay = """(?s).+<td align="center" bgcolor="Silver" width="14%"><font color="White"><a href="javascript:__doPostBack\('Calendar1','\d+'\)" style="color:White" title="\d+ \w+">(\d+)</a></font></td>.+""".r
             //println("mainPartx: "+mainPart)
             mainPart match {
               case findDay(day) => {

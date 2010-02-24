@@ -1,5 +1,8 @@
 package com.kjetland.hoursregrest.client.parser
 
+import com.kjetland.hoursregrest.client.FormElement
+import java.lang.String
+
 /**
  * Created by IntelliJ IDEA.
  * User: morten
@@ -8,17 +11,7 @@ package com.kjetland.hoursregrest.client.parser
  * To change this template use File | Settings | File Templates.
  */
 
-class FormElement(val name: String, val value: String) {
-  override def toString = "name: " + name + ". value: " + value
 
-  override def equals(other: Any) = {
-    other match {
-      case o: FormElement => this.name == o.name && this.value == o.value
-      case _ => false
-    }
-
-  }
-}
 
 object FormParser extends BaseListParser[FormElement] {
   def findMainPartRegex = """(?s)(.+)""".r

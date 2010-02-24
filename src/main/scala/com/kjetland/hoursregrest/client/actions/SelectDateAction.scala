@@ -1,8 +1,11 @@
 package com.kjetland.hoursregrest.client.actions
 
-import com.kjetland.hoursregrest.client.parser.FormElement
 import org.joda.time.DateTime
-import com.kjetland.hoursregrest.client.{Client, Browser}
+import com.kjetland.hoursregrest.client.{FormElement, Client, Browser}
+import com.kjetland.hoursregrest.client.model.SelectedDate
+import com.kjetland.hoursregrest.client.parser.FormParser
+import collection.jcl.ArrayList
+import collection.mutable.ListBuffer
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +15,7 @@ import com.kjetland.hoursregrest.client.{Client, Browser}
  * To change this template use File | Settings | File Templates.
  */
 
-class SelectDateAction(client : Client, formElements : List[FormElement]){
+class SelectDateAction(client : Client){
 
   def selectDate(date : DateTime) {
 
@@ -28,36 +31,48 @@ class SelectDateAction(client : Client, formElements : List[FormElement]){
       throw new Exception("year and/or month does not match - handling not implemented yet")
     }
 
-
-    val currentYearMonth : DateTime = null
-
-    val yearMonthCompare = compareYearAndMonth(date,  currentYearMonth)
-
-    if( yearMonthCompare != 0 ){
-      //must change month and year before we can select day
-      throw new RuntimeException("month and year select not done yet")
-    }
-
     //select day
 
     println( "must select date")
 
+    selectDay( date.getDayOfMonth, sd )
+
+  }
+
+
+  private def findDayLink(day : Int, sd : SelectedDate) : String ={
+    val p = ("""(?s).+<td align="center" width="14%"><a href="javascript:__doPostBack\('Calendar1','(\d+)'\)" style="color:Black" """ + "title=\"\\d+ \\w+\">"+day+"</a></td>.+").r
+    //println("html: " + client.html)
+    client.html match{
+      case p(id) => return id;
+      case _ => throw new RuntimeException("Cannot find day-id")
+    }
+  }
+
+  private def selectDay(day : Int, sd : SelectedDate){
+    println("Selecting day: " + day)
+
+    val dayId = findDayLink( day, sd)
+    println("dayId: " + dayId)
+
+    //create form to post
+    val originalFormElements = FormParser.parse(client.html)
+    val formElements = new ListBuffer[FormElement]
+
+    originalFormElements.foreach{
+      formElements += _
+    }
 
     
-  }
+    formElements += new FormElement("__EVENTTARGET","Calendar1")
+    formElements += new FormElement("__EVENTARGUMENT",dayId)
+    formElements += new FormElement("__LASTFOCUS","")
+    formElements += new FormElement("dlstProsjektAktivitet","-")
 
-  private def selectDay(day : Int){
-    println("Selecting day: " + day)
-    throw new RuntimeException("Not implemented yet")
-  }
+    client.browser.post(client.url, formElements.toList)
 
-  private def compareYearAndMonth( d1 : DateTime, d2 : DateTime) : Int ={
-    if( d1.getYear < d2.getYear) return -1
-    if( d1.getYear > d2.getYear) return 1
+    //( client.browser.html)
 
-    if( d1.getMonthOfYear < d2.getMonthOfYear) return -1
-    if( d1.getMonthOfYear > d2.getMonthOfYear) return 1
 
-    return 0
   }
 }
