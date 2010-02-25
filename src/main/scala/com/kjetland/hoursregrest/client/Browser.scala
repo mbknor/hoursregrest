@@ -63,12 +63,12 @@ class Browser(
 
   def post(url : String, params : List[FormElement]) : Option[String] = {
 
-    /*
+
     println("params: ")
     params.foreach{
       println(  _)
     }
-    */
+    
 
     val paramList = new ArrayList[NameValuePair](params.size)
 

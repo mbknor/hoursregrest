@@ -1,6 +1,6 @@
 package com.kjetland.hoursregrest.client
 
-import actions.SelectDateAction
+import actions.{AddRegistrationAction, SelectDateAction}
 import model.{SelectedDate, Registration, Project}
 import parser._
 import org.joda.time.{DateMidnight}
@@ -22,6 +22,7 @@ trait Client{
   def formElements : List[FormElement]
   def html : String
   def selectDate(date : DateMidnight)
+  def addRegistration(project: Project, hours: Double, description: String)
 
 }
 
@@ -78,6 +79,12 @@ class ClientImpl(
   def selectDate(date : DateMidnight){
     val action = new SelectDateAction( this, new FindDayLinkParser( html) )
     action.selectDate( date )
+    //must parse resulting page
+    parse
+  }
+
+  def addRegistration(project: Project, hours: Double, description: String) {
+    new AddRegistrationAction(this).addRegistration(project, hours, description)
     //must parse resulting page
     parse
   }

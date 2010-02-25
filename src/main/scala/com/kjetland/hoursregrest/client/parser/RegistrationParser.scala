@@ -56,7 +56,7 @@ object RegistrationParser extends BaseListParser[Registration]{
                 activity,
                 description,
                 price.toDouble,
-                amount.toDouble)
+                amount.replace(",","").toDouble)
 
               return Some( reg )
             }

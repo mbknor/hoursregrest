@@ -58,6 +58,12 @@ object App{
 //    println("Projects: ")
 //    projects.foreach( p => println( p ))
 
+    client.addRegistration( client.projects(0), 2.5, "from prog")
+
+    println("registrations:")
+    client.registrations.foreach{
+      println(_)
+    }
 
   }
 }
