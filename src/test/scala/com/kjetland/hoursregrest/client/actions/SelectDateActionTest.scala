@@ -58,9 +58,7 @@ class SelectDateActionTest {
 
     val browser = createMock( classOf[Browser])
 
-    val url = "myUrl"
-    expect( browser.url).andReturn( url )
-
+    
 
     expect( client.browser ).andReturn( browser)
 
