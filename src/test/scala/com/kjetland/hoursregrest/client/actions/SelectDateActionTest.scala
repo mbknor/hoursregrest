@@ -26,12 +26,17 @@ class SelectDateActionTest{
     EasyMock.expect(client.selectedDate).andReturn( new SelectedDate(date) )
     EasyMock.replay( client )
 
-    val a = new SelectDateAction( client )
+    val a = new SelectDateAction( client, null )
 
     a.selectDate( date )
 
     EasyMock.verify( client )
 
     return
+  }
+
+  @Test
+  def test_differentDaySameMonth{
+    
   }
 }

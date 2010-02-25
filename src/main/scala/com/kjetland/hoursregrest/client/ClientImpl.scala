@@ -76,7 +76,7 @@ class ClientImpl(
   }
 
   def selectDate(date : DateMidnight){
-    val action = new SelectDateAction( this )
+    val action = new SelectDateAction( this, new FindDayLinkParser( html) )
     action.selectDate( date )
     //must parse resulting page
     parse

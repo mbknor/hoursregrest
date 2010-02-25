@@ -4,6 +4,7 @@ import com.kjetland.hoursregrest.client.model.SelectedDate
 import collection.mutable.ListBuffer
 import com.kjetland.hoursregrest.client.{Client, FormElement}
 import org.joda.time.{DateMidnight}
+import com.kjetland.hoursregrest.client.parser.DayLinkResolver
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,7 +14,7 @@ import org.joda.time.{DateMidnight}
  * To change this template use File | Settings | File Templates.
  */
 
-class SelectDateAction(client : Client){
+class SelectDateAction(client : Client, dayLinkResolver : DayLinkResolver){
 
   def selectDate(date : DateMidnight) {
 
@@ -33,24 +34,14 @@ class SelectDateAction(client : Client){
 
     println( "must select date")
 
-    selectDay( date.getDayOfMonth, sd )
+    selectDay( date.getDayOfMonth)
 
   }
 
-
-  private def findDayLink(day : Int, sd : SelectedDate) : String ={
-    val p = ("""(?s).+<td align="center" width="14%"><a href="javascript:__doPostBack\('Calendar1','(\d+)'\)" style="color:Black" """ + "title=\"\\d+ \\w+\">"+day+"</a></td>.+").r
-    //println("html: " + client.html)
-    client.html match{
-      case p(id) => return id;
-      case _ => throw new RuntimeException("Cannot find day-id")
-    }
-  }
-
-  private def selectDay(day : Int, sd : SelectedDate){
+  private def selectDay(day : Int){
     println("Selecting day: " + day)
 
-    val dayId = findDayLink( day, sd)
+    val dayId = dayLinkResolver.dayLink( day)
     println("dayId: " + dayId)
 
     //create form to post
