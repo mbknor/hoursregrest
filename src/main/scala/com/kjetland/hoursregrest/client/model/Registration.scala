@@ -1,7 +1,6 @@
 package com.kjetland.hoursregrest.client.model
 
-import java.util.Date
-import org.joda.time.{DateTime, LocalDate}
+import org.joda.time.{DateMidnight}
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +11,7 @@ import org.joda.time.{DateTime, LocalDate}
  */
 
 class Registration(
-        val date: DateTime,
+        val date: DateMidnight,
         val hours: Double,
         val customer: String,
         val projectName: String,

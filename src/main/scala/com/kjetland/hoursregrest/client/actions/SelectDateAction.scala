@@ -1,11 +1,9 @@
 package com.kjetland.hoursregrest.client.actions
 
-import org.joda.time.DateTime
-import com.kjetland.hoursregrest.client.{FormElement, Client, Browser}
 import com.kjetland.hoursregrest.client.model.SelectedDate
-import com.kjetland.hoursregrest.client.parser.FormParser
-import collection.jcl.ArrayList
 import collection.mutable.ListBuffer
+import com.kjetland.hoursregrest.client.{Client, FormElement}
+import org.joda.time.{DateMidnight}
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,11 +15,11 @@ import collection.mutable.ListBuffer
 
 class SelectDateAction(client : Client){
 
-  def selectDate(date : DateTime) {
+  def selectDate(date : DateMidnight) {
 
     val sd = client.selectedDate
     //if date == current selected date, just return
-    if( sd == date){
+    if( sd.date != null && sd.date == date){
       return
     }
 
@@ -56,7 +54,7 @@ class SelectDateAction(client : Client){
     println("dayId: " + dayId)
 
     //create form to post
-    val originalFormElements = FormParser.parse(client.html)
+    val originalFormElements = client.formElements
     val formElements = new ListBuffer[FormElement]
 
     originalFormElements.foreach{

@@ -1,7 +1,6 @@
 package com.kjetland.hoursregrest.client.parser
 
 import com.kjetland.hoursregrest.client.model.Registration
-import java.text.SimpleDateFormat
 import org.joda.time.format.DateTimeFormat
 
 /**
@@ -50,7 +49,7 @@ object RegistrationParser extends BaseListParser[Registration]{
             case parseOption( date, hours, customer, projectName, activity, description, price, amount) => {
 
               val reg = new Registration(
-                DateTimeFormat.forPattern("dd.MM.yyyy").parseDateTime(date),
+                DateTimeFormat.forPattern("dd.MM.yyyy").parseDateTime(date).toDateMidnight,
                 hours.toDouble,
                 customer,
                 projectName,

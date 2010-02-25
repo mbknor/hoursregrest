@@ -1,6 +1,5 @@
 package com.kjetland.hoursregrest.client.parser
 
-import java.text.SimpleDateFormat
 import com.kjetland.hoursregrest.client.model.Registration
 import org.joda.time.format.DateTimeFormat
 import org.junit.{Assert, Test}
@@ -37,7 +36,7 @@ class RegistrationParserTest {
 
     val fasit = List(
       new Registration(
-        DateTimeFormat.forPattern("yyyyMMdd").parseDateTime("20100202"),
+        DateTimeFormat.forPattern("yyyyMMdd").parseDateTime("20100202").toDateMidnight,
         1.5,
         "firma1 as",
         "Diverse",
@@ -47,7 +46,7 @@ class RegistrationParserTest {
         0.0
         ),
       new Registration(
-        DateTimeFormat.forPattern("yyyyMMdd").parseDateTime("20100201"),
+        DateTimeFormat.forPattern("yyyyMMdd").parseDateTime("20100201").toDateMidnight,
         1.0,
         "firma2 as",
         "Diverse",

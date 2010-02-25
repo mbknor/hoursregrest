@@ -1,6 +1,6 @@
 package com.kjetland.hoursregrest.client.model
 
-import org.joda.time.DateTime
+import org.joda.time.{DateMidnight}
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,9 +13,9 @@ import org.joda.time.DateTime
 class SelectedDate(val year:Int, val month:Int){
 
   private var day: Option[Int] = None
-  private var _date : DateTime = null
+  private var _date : DateMidnight = null
 
-  def this(date:DateTime){
+  def this(date:DateMidnight){
     this(date.getYear, date.getMonthOfYear)
     setDay( date.getDayOfMonth)
   }
@@ -23,10 +23,10 @@ class SelectedDate(val year:Int, val month:Int){
 
   def setDay(_day:Int){
     this.day = Some(_day)
-    this._date = new DateTime(year, month, _day, 0,0,0,0)
+    this._date = new DateMidnight(year, month, _day)
   }
 
-  def date: DateTime = {
+  def date: DateMidnight = {
     return _date
   }
 

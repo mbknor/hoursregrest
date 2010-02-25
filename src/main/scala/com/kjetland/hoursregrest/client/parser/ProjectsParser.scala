@@ -1,9 +1,6 @@
 package com.kjetland.hoursregrest.client.parser
 
 import com.kjetland.hoursregrest.client.model.Project
-import collection.mutable.ListBuffer
-import util.matching.Regex
-
 /**
  * Created by IntelliJ IDEA.
  * User: morten

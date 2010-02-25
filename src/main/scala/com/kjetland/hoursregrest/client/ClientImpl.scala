@@ -2,8 +2,8 @@ package com.kjetland.hoursregrest.client
 
 import actions.SelectDateAction
 import model.{SelectedDate, Registration, Project}
-import org.joda.time.DateTime
 import parser._
+import org.joda.time.{DateMidnight}
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,14 +13,29 @@ import parser._
  * To change this template use File | Settings | File Templates.
  */
 
-class Client(
+trait Client{
+  def url : String
+  def browser : Browser
+  def projects : List[Project]
+  def registrations : List[Registration]
+  def selectedDate : SelectedDate
+  def formElements : List[FormElement]
+  def html : String
+  def selectDate(date : DateMidnight)
+
+}
+
+
+class ClientImpl(
         var url : String,
-        var browser : Browser){
+        var browser : Browser) extends Object with Client{
 
   var projects : List[Project] = List()
   var registrations : List[Registration] = List()
   var selectedDate : SelectedDate = null
-  private var formElements : List[FormElement] = List()
+  var formElements : List[FormElement] = List()
+
+
 
   //retrieve html and store it so
   //we can parse it later
@@ -60,12 +75,11 @@ class Client(
 
   }
 
-  def selectDate(date : DateTime){
+  def selectDate(date : DateMidnight){
     val action = new SelectDateAction( this )
     action.selectDate( date )
     //must parse resulting page
     parse
   }
-
-
+ 
 }

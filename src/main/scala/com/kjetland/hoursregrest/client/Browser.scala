@@ -1,12 +1,12 @@
 package com.kjetland.hoursregrest.client
 
 import org.apache.http.impl.client.DefaultHttpClient
-import java.io.{ByteArrayOutputStream, InputStream}
+import java.io.{ByteArrayOutputStream}
 import org.apache.http.auth.{AuthScope, NTCredentials}
 import org.apache.http.message.BasicNameValuePair
 import org.apache.http.client.entity.UrlEncodedFormEntity
-import java.util.{Arrays, Collections, ArrayList}
-import org.apache.http.{NameValuePair, HttpEntity, HttpResponse}
+import java.util.{ArrayList}
+import org.apache.http.{NameValuePair}
 import org.apache.http.client.methods.{HttpRequestBase, HttpPost, HttpGet}
 
 

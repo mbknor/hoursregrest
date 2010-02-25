@@ -1,7 +1,5 @@
 package com.kjetland.hoursregrest.client.parser
 
-import util.matching.Regex
-import com.kjetland.hoursregrest.client.model.Project
 import collection.mutable.ListBuffer
 
 /**

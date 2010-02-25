@@ -1,8 +1,6 @@
 package com.kjetland.hoursregrest.client.parser
 
 import exception.ParseException
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.DateTime
 import com.kjetland.hoursregrest.client.model.SelectedDate
 
 /**

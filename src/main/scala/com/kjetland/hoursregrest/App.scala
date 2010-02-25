@@ -1,11 +1,9 @@
 package com.kjetland.hoursregrest
 
-import client.parser.FormParser
-import client.{Client, Browser}
-import xml.XML
+import client.{Client, ClientImpl, Browser}
 import java.util.Properties
 import java.io.FileInputStream
-import org.joda.time.DateTime
+import org.joda.time.{DateMidnight}
 
 /**
  * Hello world!
@@ -26,7 +24,7 @@ object App{
     val browser = new Browser( username, password);
 
 
-    val client = new Client( url, browser )
+    val client : Client = new ClientImpl( url, browser )
 
     println("projects:")
     client.projects.foreach{
@@ -49,7 +47,7 @@ object App{
     }
     */
 
-    val date = new DateTime(2010, 2, 23, 0,0,0,0)
+    val date = new DateMidnight(2010, 2, 23)
     client.selectDate(date )
 
 
