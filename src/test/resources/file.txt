@@ -1,0 +1,5 @@
+#Here follows some example registrations
+
+2010.02.01; Companyname; 8; test registration
+2010.02.02; OtherCompany; 7.50; This was a long day
+2010.02.03	OtherCompany	5,33	Some comment

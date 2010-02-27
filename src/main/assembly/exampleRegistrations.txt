@@ -1,0 +1,21 @@
+#This file is an example hours registration file used by hoursreg.
+#
+#This is the rules:
+#
+# * One registration pr line
+# * use one of the following column-/field-separators: semicolon or tab
+#
+# column-list (in this order):
+# date        - the date for the registration on the format yyyy.mm.dd
+# project     - projectID or some unique part of a project-name
+# hours       - the number of hours to register. accepts both 1.23 and 1,23
+# description - a description for the registration
+#
+# Ass you can see, # at the start of the line means comment... ;)
+#
+#
+#Here follows some example registrations
+
+2010.02.01; Companyname; 8; test registration
+2010.02.02; OtherCompany; 7.50; This was a long day
+2010.02.03  OtherCompany    5,33; Some comment

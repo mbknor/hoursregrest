@@ -16,7 +16,11 @@ import upgradechecker.UpgradeChecker
  * To change this template use File | Settings | File Templates.
  */
 
-class ArgException(desc: String) extends Exception(desc)
+class ArgException(desc: String, cause : Throwable) extends Exception(desc, cause){
+  def this( desc : String ){
+    this(desc, null)
+  }
+}
 
 /**
  * convenience class uses to "pop" one settings after another
@@ -125,13 +129,13 @@ object CmdApp {
                 var tmp = ""
                 while( args.more ){
                   args.pop() match {
-                    case "-d" => date = parseDate( args.pop() )
+                    case "-d" => date = DateParser.parseDate( args.pop() )
                     case "-p" => {
                       val projectName = args.pop()
-                      project = resolveProject( projectName, client)
+                      project = ProjectResolverObject.resolveProject( projectName, client)
                       println("project: " + projectName + " => " + project)
                     }
-                    case "-h" => hours = args.pop().replace(",", ".").toDouble
+                    case "-h" => hours = HoursParser.parseHours( args.pop())
                     case "-t" => desc = args.pop()
                   }
                 }
@@ -196,42 +200,8 @@ object CmdApp {
 
   }
 
-  def parseDate(dateString : String ) : DateMidnight = {
-    val datePattern = "yyyy.MM.dd"
-    try{
-      return DateTimeFormat.forPattern(datePattern).parseDateTime(dateString).toDateMidnight
-    }catch{
-      case unknown => throw new Exception("Error parsing date '"+dateString+"'. Known formats: " + datePattern)
-    }
-  }
 
-  def resolveProject(project: String, client: Client): Project = {
 
-    var _project = project.toLowerCase
-    var selectedProject: Project = null
-    client.projects.foreach {
-      p =>
-        var _p: Project = null
-        if (p.id.toString == _project) {
-          _p = p
-        } else if (p.name.toLowerCase.contains(_project)) {
-          _p = p
-        }
-
-        if (_p != null) {
-          if (selectedProject != null) {
-            throw new ArgException("project '" + project + "' is not unique");
-          }
-          selectedProject = _p
-        }
-
-    }
-
-    if (selectedProject != null) return selectedProject
-
-    throw new ArgException("Unable to resolve projectId from: " + project)
-
-  }
 
   def printHelp {
     println("""params:
@@ -245,14 +215,17 @@ url, username and password:
 
 -c <command-name>
    commands:
-   lp   list projects
-   lr   list registrations
-   add  add registration (has params)
+   lp        list projects
+   lr        list registrations
+   add       add registration (has params)
         params:
         -d <date> (format: yyyy.mm.dd)
         -p <projectId or unique-part-of-project-name>
         -h <hours>
         -t <description>
+   add-file  add registrations from file
+        params:
+        -f filename to import (see exampleRegistrations.txt)
 """)
   }
 
