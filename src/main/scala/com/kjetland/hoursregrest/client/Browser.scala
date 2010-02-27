@@ -30,15 +30,17 @@ class FormElement(val name: String, val value: String) {
   }
 }
 
-class Browser(
-        username : String,
-        password : String) {
+class Browser {
 
   val httpclient = new DefaultHttpClient();
 
-  val creds = new NTCredentials( username, password, null, null);
-  httpclient.getCredentialsProvider().setCredentials(AuthScope.ANY, creds);
+  def this( username : String, password : String){
+    this()
+    val creds = new NTCredentials( username, password, null, null);
+    httpclient.getCredentialsProvider().setCredentials(AuthScope.ANY, creds);
+  }
 
+  
   var html : Option[String] = None
 
   def get(url: String) : Option[String] = {

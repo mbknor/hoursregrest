@@ -1,5 +1,7 @@
 package com.kjetland.hoursregrest.upgradechecker
 
+import com.kjetland.hoursregrest.client.Browser
+
 /**
  * Created by IntelliJ IDEA.
  * User: morten
@@ -17,4 +19,48 @@ package com.kjetland.hoursregrest.upgradechecker
  * 
  */
 
-class UpgradeChecker
+object UpgradeChecker{
+  private val versionUrl = "http://github.com/mbknor/hoursregrest/raw/master/latestReleaseVersion.txt"
+
+  var currentVersion = "1.0-SNAPSHOT"
+
+  def check() : Boolean = {
+    val remoteVersion = getRemoteVersion()
+    if( remoteVersion != null ){
+      //is remote version newer?
+      if( remoteVersion != currentVersion){
+        println("""**
+A new version of this program is ready to be downloaded from:
+http://github.com/mbknor/hoursregrest/downloads
+**""")
+        return true
+      }else{
+        return false
+      }
+    }else{
+      return false
+    }
+  }
+
+  private def getRemoteVersion() : String = {
+    val browser = new Browser();
+
+    try{
+      val remoteString = browser.get( versionUrl ).get
+
+
+      //parse it
+      val findIt = "(?s).+\ncurrentVersion=(.+)\r?\n?.*".r
+
+      remoteString match {
+        case findIt(x) => return x
+        case _ => None
+      }
+    }catch{
+      case unknown => println("(Error checking for upgrade("+unknown.getMessage+"))");
+    }
+
+    return null
+  }
+
+}

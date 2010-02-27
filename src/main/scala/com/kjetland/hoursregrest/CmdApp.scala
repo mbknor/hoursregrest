@@ -6,6 +6,7 @@ import org.joda.time.format.DateTimeFormat
 import java.util.Properties
 import java.io.FileInputStream
 import org.joda.time.DateMidnight
+import upgradechecker.UpgradeChecker
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,6 +41,8 @@ class Args(args: Array[String]) {
 
 object CmdApp {
   def main(_args: Array[String]) {
+
+    UpgradeChecker.check()
 
     val args = new Args(_args)
 
