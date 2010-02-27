@@ -4,6 +4,8 @@ import actions.{AddRegistrationAction, SelectDateAction}
 import model.{SelectedDate, Registration, Project}
 import parser._
 import org.joda.time.{DateMidnight}
+import utils.UrlFixer
+import com.kjetland.hoursregrest.ArgException
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,6 +33,10 @@ class ClientImpl(
         var url : String,
         var browser : Browser) extends Object with Client{
 
+  //fix the url
+  url = UrlFixer.fixUrl( url)
+  println("Using url: " + url)
+
   var projects : List[Project] = List()
   var registrations : List[Registration] = List()
   var selectedDate : SelectedDate = null
@@ -57,6 +63,12 @@ class ClientImpl(
   private def parse(){
     if( !browser.html.isEmpty){
       val html = browser.html.get
+
+      //make sure we are authenticated
+      if( html.indexOf("You are not authorized to view this page") > 0 ){
+        throw new ArgException("Username and/or password is not correct")
+      }
+
       projects = ProjectsParser.parse( html )
       registrations = RegistrationParser.parse(html)
       //before a date is selected manually, no selected date can be returned
