@@ -126,39 +126,62 @@ object CmdApp {
 
                 //must find all params for this command
 
-                var tmp = ""
+                val registration = new Registration
                 while( args.more ){
                   args.pop() match {
-                    case "-d" => date = DateParser.parseDate( args.pop() )
+                    case "-d" => registration.date = DateParser.parseDate( args.pop() )
                     case "-p" => {
                       val projectName = args.pop()
-                      project = ProjectResolverObject.resolveProject( projectName, client)
-                      println("project: " + projectName + " => " + project)
+                      registration.project = ProjectResolverObject.resolveProject( projectName, client)
                     }
-                    case "-h" => hours = HoursParser.parseHours( args.pop())
-                    case "-t" => desc = args.pop()
+                    case "-h" => registration.hours = HoursParser.parseHours( args.pop())
+                    case "-t" => registration.description = args.pop()
                   }
                 }
 
                 //verify that we have it all
+                println( "Going to register: " + registration)
 
-                if( date == null ) throw new ArgException("missing date")
-                if( project == null ) throw new ArgException("missing project")
-                if( hours <= 0 ) throw new ArgException("missing hours")
-                if( desc == null ) throw new ArgException("missing description")
+                registration.validate
 
 
-                client.selectDate(date)
+                client.selectDate(registration.date)
                 //validate the date
-                if (client.selectedDate.date != date) {
-                  throw new ArgException("Failed setting the date")
+                if (client.selectedDate.date != registration.date) {
+                  throw new ArgException("Failed setting the date: " + registration.date)
                 }
 
                 //add the registration
-                client.addRegistration(project, hours, desc)
+                client.addRegistration(registration.project, registration.hours, registration.description)
 
+                 println( "Registration completed." )
+                println("* Now you can go to the website and verify the registrations,\n* then confirm them.")
 
                 }
+
+              case "add-file" => {
+                foundCommand = true
+                //pop the -f param
+                if( args.pop() != "-f" ) throw new ArgException("Missing -f param for command add-file")
+                //pop the filename
+                val filename = args.pop()
+                //parse the file
+                val registrations = RegistrationsFileParser.parse( filename, new ProjectResolverImpl( client ))
+                println( "Starting to add registrations:" )
+                registrations.foreach{ registration =>
+                  
+                  client.selectDate(registration.date)
+                  //validate the date
+                  if (client.selectedDate.date != registration.date) {
+                    throw new ArgException("Failed setting the date: "+registration.date)
+                  }
+
+                  //add the registration
+                  client.addRegistration(registration.project, registration.hours, registration.description)
+                }
+                println( "All "+registrations.size +" registration completed." )
+                println("* Now you can go to the website and verify the registrations,\n* then confirm them.")
+              }
 
               case _ => throw new ArgException("invalid command: " + arg)
 
@@ -217,15 +240,19 @@ url, username and password:
    commands:
    lp        list projects
    lr        list registrations
-   add       add registration (has params)
+   add       add registration(*) (has params)
         params:
         -d <date> (format: yyyy.mm.dd)
         -p <projectId or unique-part-of-project-name>
         -h <hours>
         -t <description>
-   add-file  add registrations from file
+   add-file  add registrations from file(*)
         params:
         -f filename to import (see exampleRegistrations.txt)
+
+* - Note! This program only adds the registrations.
+    You have to go to the website and verify the registrations,
+    then confirm them manually.
 """)
   }
 

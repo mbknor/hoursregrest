@@ -25,7 +25,7 @@ object RegistrationsFileParser{
       in = new BufferedReader( new FileReader(filename) )
       return parse( in, projectResolver )
     }catch{
-      case unknown => throw new ArgException("Error parsing file " + filename + " (error: "+unknown+")", unknown)
+      case unknown => throw new Exception("Error parsing file " + filename + " (error: "+unknown+")", unknown)
     }finally{
       try{
         in.close
@@ -45,17 +45,19 @@ object RegistrationsFileParser{
       lineNo = lineNo + 1
       line = line.trim
       try{
-        println("line: " + line)
+        //println("line: " + line)
         if( !(line.startsWith("#") || line.isEmpty) ){
           val r = new Registration
 
           var parts =line.split(";|\t")
           if( parts.length != 4) throw new ArgException("Column-count is not 4 (is: "+parts.length+")")
 
-          r.date = DateParser.parseDate( parts(0))
-          r.project = projectResolver.resolveProject( parts(1))
-          r.hours = HoursParser.parseHours( parts(2) )
-          r.description = parts(3)
+          r.date = DateParser.parseDate( parts(0).trim)
+          r.project = projectResolver.resolveProject( parts(1).trim)
+          r.hours = HoursParser.parseHours( parts(2).trim )
+          r.description = parts(3).trim
+
+          r.validate
 
           list += r
         }
