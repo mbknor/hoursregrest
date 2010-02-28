@@ -4,7 +4,7 @@ import com.kjetland.hoursregrest.client.model.SelectedDate
 import collection.mutable.ListBuffer
 import com.kjetland.hoursregrest.client.{Client, FormElement}
 import org.joda.time.{DateMidnight}
-import com.kjetland.hoursregrest.client.parser.DayLinkResolver
+import com.kjetland.hoursregrest.client.parser.{PrevNextMonthLinkIdResolver, DayLinkResolver}
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,8 +26,25 @@ class SelectDateAction(client : Client, dayLinkResolver : DayLinkResolver){
 
     
     //if year and month does not match we must call server and change it
-    if( !(sd.year == date.getYear && sd.month == date.getMonthOfYear) ){
-      throw new Exception("year and/or month does not match - handling not implemented yet")
+    val yearMonthCompare = new SelectedDate(date).compareYearMonth( sd )
+    if( yearMonthCompare != 0 ){
+      println("server date is on different year/month ("+sd+"). must change it")
+
+      if( yearMonthCompare > 0 ){
+        //destination date is in the future. must go to next month
+        gotoNextMonth()
+        //call this same method again and recheck
+        selectDate( date )
+        return
+
+      }else{
+        //destination date is in the past. must go to prev month
+        gotoPrevMonth()
+        //call this same method again and recheck
+        selectDate( date )
+        return
+      }
+
     }
 
     //select day
@@ -44,6 +61,11 @@ class SelectDateAction(client : Client, dayLinkResolver : DayLinkResolver){
     val dayId = dayLinkResolver.dayLink( day)
     println("dayId: " + dayId)
 
+    performRemoteAction( dayId )
+
+  }
+
+  private def performRemoteAction(linkId : String){
     //create form to post
     val originalFormElements = client.formElements
     val formElements = new ListBuffer[FormElement]
@@ -52,16 +74,28 @@ class SelectDateAction(client : Client, dayLinkResolver : DayLinkResolver){
       formElements += _
     }
 
-    
+
     formElements += new FormElement("__EVENTTARGET","Calendar1")
-    formElements += new FormElement("__EVENTARGUMENT",dayId)
+    formElements += new FormElement("__EVENTARGUMENT",linkId)
     formElements += new FormElement("__LASTFOCUS","")
     formElements += new FormElement("dlstProsjektAktivitet","-")
 
     client.browser.post(client.url, formElements.toList)
 
-    //( client.browser.html)
-
-
   }
+
+  private def gotoNextMonth() {
+    val linkId = new PrevNextMonthLinkIdResolver( client.html ).findNextMonthLinkId()
+    performRemoteAction( linkId)
+    //client must reparse to discovere the new selected date
+    client.parse()
+  }
+
+  private def gotoPrevMonth(){
+    val linkId = new PrevNextMonthLinkIdResolver( client.html ).findPrevMonthLinkId()
+    performRemoteAction( linkId)
+    //client must reparse to discovere the new selected date
+    client.parse()
+  }
+
 }

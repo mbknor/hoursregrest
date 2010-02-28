@@ -61,6 +61,21 @@ class SelectedDate(val year:Int, val month:Int){
     }
   }
 
+  /**
+   * returns 1 if this year and month is larger than other.
+   * if other is larger, then -1 is returned.
+   * if year and month is equal, 0 is returned
+   */
+  def compareYearMonth( other : SelectedDate) : Int = {
+    if( this.year > other.year ) return 1
+    if( this.year < other.year ) return -1
+
+    if( this.month > other.month ) return 1
+    if( this.month < other.month ) return -1
+
+    return 0
+  }
+
 
   override def toString = "year: "+year+" month: " + month + "  day: " + day + " date: " + date
 }

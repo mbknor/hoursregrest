@@ -25,6 +25,7 @@ trait Client{
   def html : String
   def selectDate(date : DateMidnight)
   def addRegistration(project: Project, hours: Double, description: String)
+  def parse()
 
 }
 
@@ -60,7 +61,7 @@ class ClientImpl(
     parse()
   }
 
-  private def parse(){
+  def parse(){
     if( !browser.html.isEmpty){
       val html = browser.html.get
 
@@ -89,7 +90,7 @@ class ClientImpl(
   }
 
   def selectDate(date : DateMidnight){
-    val action = new SelectDateAction( this, new FindDayLinkParser( html) )
+    val action = new SelectDateAction( this, new FindDayLinkParser( this) )
     action.selectDate( date )
     //must parse resulting page
     parse
