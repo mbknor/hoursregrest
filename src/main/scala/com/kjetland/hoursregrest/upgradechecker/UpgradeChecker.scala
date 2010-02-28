@@ -22,7 +22,7 @@ import com.kjetland.hoursregrest.client.Browser
 object UpgradeChecker{
   private val versionUrl = "http://github.com/mbknor/hoursregrest/raw/master/latestReleaseVersion.txt"
 
-  var currentVersion = "1.0"
+  var currentVersion = "1.1"
 
   def check() : Boolean = {
     val remoteVersion = getRemoteVersion()
