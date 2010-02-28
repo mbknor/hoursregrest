@@ -3,4 +3,4 @@
 #the versionstring embeded in program, the user is alerted that a newer verion of the program can
 #be downloaded
 
-currentVersion=1.0-SNAPSHOT
+currentVersion=1.0
