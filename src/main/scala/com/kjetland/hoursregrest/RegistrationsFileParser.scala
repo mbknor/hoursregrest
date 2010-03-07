@@ -4,6 +4,7 @@ import client.Client
 import client.model.Project
 import java.io.{BufferedReader, FileReader}
 import collection.mutable.ListBuffer
+import utils.LogHelper
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,11 +15,11 @@ import collection.mutable.ListBuffer
  */
 
 
-object RegistrationsFileParser{
+object RegistrationsFileParser extends LogHelper{
 
   def parse(filename : String, projectResolver : ProjectResolver): List[Registration] = {
 
-    println("Parsing " + filename)
+    logger.info("Parsing " + filename)
 
     var in : BufferedReader = null
     try{

@@ -6,6 +6,8 @@ import parser._
 import org.joda.time.{DateMidnight}
 import utils.UrlFixer
 import com.kjetland.hoursregrest.ArgException
+import org.apache.log4j.Logger
+import com.kjetland.hoursregrest.utils.LogHelper
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,11 +34,13 @@ trait Client{
 
 class ClientImpl(
         var url : String,
-        var browser : Browser) extends Object with Client{
+        var browser : Browser) extends Object with Client with LogHelper{
+
+
 
   //fix the url
   url = UrlFixer.fixUrl( url)
-  println("Using url: " + url)
+  logger.info("Using url: " + url)
 
   var projects : List[Project] = List()
   var registrations : List[Registration] = List()

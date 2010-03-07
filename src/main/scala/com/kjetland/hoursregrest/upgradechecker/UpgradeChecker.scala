@@ -1,6 +1,7 @@
 package com.kjetland.hoursregrest.upgradechecker
 
 import com.kjetland.hoursregrest.client.Browser
+import com.kjetland.hoursregrest.utils.LogHelper
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,17 +20,20 @@ import com.kjetland.hoursregrest.client.Browser
  * 
  */
 
-object UpgradeChecker{
+object UpgradeChecker extends LogHelper{
   private val versionUrl = "http://github.com/mbknor/hoursregrest/raw/master/latestReleaseVersion.txt"
 
   var currentVersion = "1.1"
 
   def check() : Boolean = {
+
+    logger.debug("checking for online for newer version")
+
     val remoteVersion = getRemoteVersion()
     if( remoteVersion != null ){
       //is remote version newer?
       if( remoteVersion != currentVersion){
-        println("""**
+        logger.info("""**
 A new version of this program is ready to be downloaded from:
 http://github.com/mbknor/hoursregrest/downloads
 **""")
@@ -46,8 +50,10 @@ http://github.com/mbknor/hoursregrest/downloads
     val browser = new Browser();
 
     try{
+      logger.debug("upgrade check url: " + versionUrl)
       val remoteString = browser.get( versionUrl ).get
 
+      logger.debug("remoteString: " + remoteString)
 
       //parse it
       val findIt = "(?s).+\ncurrentVersion=(.+)\r?\n?.*".r
@@ -57,7 +63,7 @@ http://github.com/mbknor/hoursregrest/downloads
         case _ => None
       }
     }catch{
-      case unknown => println("(Error checking for upgrade("+unknown.getMessage+"))");
+      case unknown => logger.warn("(Error checking for upgrade("+unknown.getMessage+"))");
     }
 
     return null

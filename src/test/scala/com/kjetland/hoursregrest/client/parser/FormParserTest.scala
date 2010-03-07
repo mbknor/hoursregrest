@@ -1,6 +1,7 @@
 package com.kjetland.hoursregrest.client.parser
 
 import org.junit.{Assert, Test}
+import com.kjetland.hoursregrest.client.FormElement
 
 /**
  * Created by IntelliJ IDEA.

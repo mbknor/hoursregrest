@@ -4,9 +4,12 @@ import client.model.Project
 import client.{Client, Browser, ClientImpl}
 import org.joda.time.format.DateTimeFormat
 import java.util.Properties
-import java.io.FileInputStream
 import org.joda.time.DateMidnight
 import upgradechecker.UpgradeChecker
+import java.io.{File, FileInputStream}
+import org.apache.log4j.Logger
+import org.apache.log4j.xml.DOMConfigurator
+import utils.LogHelper
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,8 +46,23 @@ class Args(args: Array[String]) {
   }
 }
 
-object CmdApp {
+object CmdApp extends LogHelper{
+
+
+  private def logEnvironemntInfo{
+    if( logger.isDebugEnabled ){
+      logger.debug("Environment list:")
+      System.getenv.keySet.toArray.foreach{ x=>
+        logger.debug( "" + x + "=" + System.getenv(x.toString))
+      }
+    }
+  }
+
   def main(_args: Array[String]) {
+
+    configureLogging( _args)
+
+    logEnvironemntInfo
 
     UpgradeChecker.check()
 
@@ -101,18 +119,18 @@ object CmdApp {
               case "lp" => {
                 foundCommand = true
                 val projects = client.projects
-                println("Projects:")
+                logger.info("Projects:")
                 projects.foreach {
-                  println(_)
+                  logger.info(_)
                 }
               }
 
               case "lr" => {
                 foundCommand = true
                 val regs = client.registrations
-                println("Registrations:")
+                logger.info("Registrations:")
                 regs.foreach {
-                  println(_)
+                  logger.info(_)
                 }
               }
 
@@ -140,7 +158,7 @@ object CmdApp {
                 }
 
                 //verify that we have it all
-                println( "Going to register: " + registration)
+                logger.info( "Going to register: " + registration)
 
                 registration.validate
 
@@ -154,8 +172,8 @@ object CmdApp {
                 //add the registration
                 client.addRegistration(registration.project, registration.hours, registration.description)
 
-                 println( "Registration completed." )
-                println("* Now you can go to the website and verify the registrations,\n* then confirm them.")
+                logger.info( "Registration completed." )
+                logger.info("* Now you can go to the website and verify the registrations,\n* then confirm them.")
 
                 }
 
@@ -167,7 +185,7 @@ object CmdApp {
                 val filename = args.pop()
                 //parse the file
                 val registrations = RegistrationsFileParser.parse( filename, new ProjectResolverImpl( client ))
-                println( "Starting to add registrations:" )
+                logger.info( "Starting to add registrations:" )
                 registrations.foreach{ registration =>
                   
                   client.selectDate(registration.date)
@@ -179,8 +197,8 @@ object CmdApp {
                   //add the registration
                   client.addRegistration(registration.project, registration.hours, registration.description)
                 }
-                println( "All "+registrations.size +" registration completed." )
-                println("* Now you can go to the website and verify the registrations,\n* then confirm them.")
+                logger.info( "All "+registrations.size +" registration completed." )
+                logger.info("* Now you can go to the website and verify the registrations,\n* then confirm them.")
               }
 
               case _ => throw new ArgException("invalid command: " + arg)
@@ -198,7 +216,7 @@ object CmdApp {
 
 
       if (!foundCommand) {
-        println("Error: Did not find command.")
+        logger.info("Error: Did not find command.")
         printHelp
         System.exit(-1)
       }
@@ -207,12 +225,16 @@ object CmdApp {
 
     } catch {
       case e: ArgException => {
-        println("Argument error: " + e.getMessage)
+        if( logger.isDebugEnabled) {
+          logger.debug("Argument error", e)
+        }else{
+          logger.info("Argument error: " + e.getMessage)
+        }
         printHelp
         System.exit(-1)
       }
       case unknown => {
-        unknown.printStackTrace;
+        logger.error("", unknown);
         System.exit(-1)
       }
     }
@@ -227,7 +249,7 @@ object CmdApp {
 
 
   def printHelp {
-    println("""params:
+    logger.info("""params:
 url, username and password:
 -url <url to timereg-website>
 -username <username>
@@ -250,6 +272,8 @@ url, username and password:
         params:
         -f filename to import (see exampleRegistrations.txt)
 
+-debug  logs additional info to a logfile
+
 * - Note! This program only adds the registrations.
     You have to go to the website and verify the registrations,
     then confirm them manually.
@@ -266,7 +290,7 @@ url, username and password:
     load()
 
     private def load() {
-      println("loading " + settingsFilename)
+      logger.info("loading " + settingsFilename)
       val props = new Properties()
       try {
         props.load(new FileInputStream(settingsFilename))
@@ -287,5 +311,30 @@ url, username and password:
 
     }
 
+  }
+
+  /**
+   * if one of the args to this program is "-debug", then a different
+   * log4j.xml file is used to set up the logging.
+   */
+  private def configureLogging(_args: Array[String]){
+
+    //check for the -debug arg
+    var usingDebug = false
+
+    _args.foreach{ x=>
+      if( x == "-debug"){
+        usingDebug = true
+      }
+    }
+
+    if( !usingDebug){
+      return
+    }
+
+    val filename = "debug_log4j.xml"
+    val url = this.getClass.getClassLoader.getResource(filename)
+    DOMConfigurator.configure( url );
+    logger.info("Runing program in debug mode. Extra debug info is written to logfile.")
   }
 }

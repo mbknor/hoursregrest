@@ -5,6 +5,7 @@ import collection.mutable.ListBuffer
 import com.kjetland.hoursregrest.client.{Client, FormElement}
 import org.joda.time.{DateMidnight}
 import com.kjetland.hoursregrest.client.parser.{PrevNextMonthLinkIdResolver, DayLinkResolver}
+import com.kjetland.hoursregrest.utils.LogHelper
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,7 +15,7 @@ import com.kjetland.hoursregrest.client.parser.{PrevNextMonthLinkIdResolver, Day
  * To change this template use File | Settings | File Templates.
  */
 
-class SelectDateAction(client : Client, dayLinkResolver : DayLinkResolver){
+class SelectDateAction(client : Client, dayLinkResolver : DayLinkResolver) extends LogHelper{
 
   def selectDate(date : DateMidnight) {
 
@@ -28,7 +29,7 @@ class SelectDateAction(client : Client, dayLinkResolver : DayLinkResolver){
     //if year and month does not match we must call server and change it
     val yearMonthCompare = new SelectedDate(date).compareYearMonth( sd )
     if( yearMonthCompare != 0 ){
-      println("server date is on different year/month ("+sd+"). must change it")
+      logger.info("server date is on different year/month ("+sd+"). must change it")
 
       if( yearMonthCompare > 0 ){
         //destination date is in the future. must go to next month
@@ -49,17 +50,17 @@ class SelectDateAction(client : Client, dayLinkResolver : DayLinkResolver){
 
     //select day
 
-    println( "must select date")
+    logger.info( "must select date")
 
     selectDay( date.getDayOfMonth)
 
   }
 
   private def selectDay(day : Int){
-    println("Selecting day: " + day)
+    logger.info("Selecting day: " + day)
 
     val dayId = dayLinkResolver.dayLink( day)
-    println("dayId: " + dayId)
+    logger.info("dayId: " + dayId)
 
     performRemoteAction( dayId )
 

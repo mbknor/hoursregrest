@@ -8,6 +8,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity
 import java.util.{ArrayList}
 import org.apache.http.{NameValuePair}
 import org.apache.http.client.methods.{HttpRequestBase, HttpPost, HttpGet}
+import com.kjetland.hoursregrest.utils.LogHelper
 
 
 /**
@@ -30,7 +31,7 @@ class FormElement(val name: String, val value: String) {
   }
 }
 
-class Browser {
+class Browser extends LogHelper{
 
   val httpclient = new DefaultHttpClient();
 
@@ -42,6 +43,13 @@ class Browser {
 
   def this( username : String, password : String){
     this()
+
+    if( logger.isDebugEnabled ){
+      logger.debug("username: '" + username + "'")
+      logger.debug("password: " + getInfoAboutPassword(password))
+    }
+
+
     val creds = new NTCredentials( username, password, null, null);
     httpclient.getCredentialsProvider().setCredentials(AuthScope.ANY, creds);
   }
@@ -49,8 +57,30 @@ class Browser {
   
   var html : Option[String] = None
 
+  private def getInfoAboutPassword(pw: String):String={
+
+    var pwAllAscii = false
+    val m = """(\w*)""".r
+    
+    pw match {
+      case m(x) => pwAllAscii = true
+      case _ => pwAllAscii = false
+    }
+
+    return "password length: " + pw.length + "\n"+
+      "password all lowercase: " + (pw.toLowerCase == pw) + "\n"+
+      "password all uppercase: " + (pw.toUpperCase == pw) + "\n"+
+      "password all [a..z0..9]: " + pwAllAscii
+  }
+
   def get(url: String) : Option[String] = {
+
+    if(logger.isDebugEnabled){
+      logger.debug("executing http get: " + url)
+    }
+
     val httpget = new HttpGet(url);
+
     execute( httpget)
 
   }
@@ -61,7 +91,13 @@ class Browser {
     if (entity != null) {
       val buffer = new ByteArrayOutputStream();
       entity.writeTo( buffer );
-      this.html = Some( buffer.toString("iso-8859-1") )
+      val responseString = buffer.toString("iso-8859-1")
+
+      if( logger.isDebugEnabled ){
+        logger.debug("http response text:" + responseString)
+      }
+
+      this.html = Some( responseString )
     }else{
       this.html = None
     }
@@ -71,12 +107,12 @@ class Browser {
 
   def post(url : String, params : List[FormElement]) : Option[String] = {
 
-/*
-    println("params: ")
-    params.foreach{
-      println(  _)
+    if(logger.isDebugEnabled){
+      logger.debug("executing http post: " + url)
+      params.foreach{ x =>
+          logger.debug(" formParam: " + x)
+        }
     }
-*/    
 
     val paramList = new ArrayList[NameValuePair](params.size)
 

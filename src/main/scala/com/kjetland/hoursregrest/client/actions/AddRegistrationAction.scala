@@ -3,6 +3,7 @@ package com.kjetland.hoursregrest.client.actions
 import com.kjetland.hoursregrest.client.model.Project
 import collection.mutable.ListBuffer
 import com.kjetland.hoursregrest.client.{FormElement, Client}
+import com.kjetland.hoursregrest.utils.LogHelper
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,11 +13,11 @@ import com.kjetland.hoursregrest.client.{FormElement, Client}
  * To change this template use File | Settings | File Templates.
  */
 
-class AddRegistrationAction(client: Client) {
+class AddRegistrationAction(client: Client) extends LogHelper {
 
   def addRegistration(project: Project, hours: Double, description: String) {
 
-    println("Adding registration. project: " + project + " hours: " + hours + " desc: " + description)
+    logger.info("Adding registration. project: " + project + " hours: " + hours + " desc: " + description)
 
     val originalFormElements = client.formElements
     val formElements = new ListBuffer[FormElement]
