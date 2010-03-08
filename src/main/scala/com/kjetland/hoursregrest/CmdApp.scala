@@ -70,37 +70,24 @@ object CmdApp extends LogHelper{
 
     try {
 
-      //check is user wants to print helpscreen
-      while (args.more) {
-        args.pop() match {
-          case "-help" => printHelp; System.exit(0);
-          case _ => None
-        }
-      }
-
-
 
       var url = ""
       var username = ""
       var password = ""
 
-      var used_urlUserPass_params = false
-      args.reset()
-      while (args.more) {
-        val arg = args.pop()
-        arg match {
-          case "-url" => url = args.pop(); used_urlUserPass_params = true
-          case "-username" => username = args.pop(); used_urlUserPass_params = true
-          case "-password" => password = args.pop(); used_urlUserPass_params = true
-          case _ => None
+      _args.toList match {
+        case "-help" :: rest => printHelp; System.exit(0);
+        case "-url" :: _url :: "-username" :: _username :: "-password" :: _password ::rest => {
+          url = _url
+          username = _username
+          password = _password
         }
-      }
-
-      if (!used_urlUserPass_params) {
-        val settings = new SettingsFile()
-        url = settings.url
-        username = settings.username
-        password = settings.password
+        case _ => {
+          val settings = new SettingsFile()
+          url = settings.url
+          username = settings.username
+          password = settings.password
+        }
       }
 
 
