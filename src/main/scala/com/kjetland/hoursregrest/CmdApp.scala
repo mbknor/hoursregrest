@@ -40,7 +40,7 @@ object CmdApp extends LogHelper {
 
   def main(_args: Array[String]) {
 
-    configureLogging(_args)
+    var argsLeft = configureLogging(_args)
 
     logEnvironemntInfo
 
@@ -52,8 +52,6 @@ object CmdApp extends LogHelper {
       var url = ""
       var username = ""
       var password = ""
-
-      var argsLeft = _args.toList
 
       argsLeft match {
         case "-help" :: rest => printHelp; System.exit(0);
@@ -129,7 +127,7 @@ object CmdApp extends LogHelper {
     } catch {
       case e: ArgException => {
         if (logger.isDebugEnabled) {
-          logger.debug("Argument error", e)
+          logger.info("Argument error", e)
         } else {
           logger.info("Argument error: " + e.getMessage)
         }
@@ -153,7 +151,7 @@ object CmdApp extends LogHelper {
     logger.info("""params:
 url, username and password:
 -url <url to timereg-website>
--username <username>
+-username <username> (without domain name)
 -password <password>
 (skip these settings to load url, user and password from hoursreg.properties)
 
@@ -218,25 +216,30 @@ url, username and password:
    * if one of the args to this program is "-debug", then a different
    * log4j.xml file is used to set up the logging.
    */
-  private def configureLogging(_args: Array[String]) {
+  private def configureLogging(_args: Array[String]) : List[String] = {
 
     //check for the -debug arg
     var usingDebug = false
 
-    _args.foreach {
-      x =>
-        if (x == "-debug") {
-          usingDebug = true
-        }
+    var argsLeft = _args.toList
+
+    argsLeft match{
+      case "-debug" :: rest => {
+        usingDebug = true
+        argsLeft = rest
+      }
+      case _ => None
     }
 
     if (!usingDebug) {
-      return
+      return argsLeft
     }
 
     val filename = "debug_log4j.xml"
     val url = this.getClass.getClassLoader.getResource(filename)
     DOMConfigurator.configure(url);
     logger.info("Runing program in debug mode. Extra debug info is written to logfile.")
+
+    return argsLeft
   }
 }
