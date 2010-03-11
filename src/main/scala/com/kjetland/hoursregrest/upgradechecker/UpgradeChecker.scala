@@ -23,7 +23,7 @@ import com.kjetland.hoursregrest.utils.LogHelper
 object UpgradeChecker extends LogHelper{
   private val versionUrl = "http://github.com/mbknor/hoursregrest/raw/master/latestReleaseVersion.txt"
 
-  var currentVersion = "1.2"
+  var currentVersion = "1.3"
 
   def check() : Boolean = {
 
