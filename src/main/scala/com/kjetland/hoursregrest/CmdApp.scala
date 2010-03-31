@@ -62,10 +62,14 @@ object CmdApp extends LogHelper {
           argsLeft = rest
         }
         case _ => {
-          val settings = new SettingsFile()
-          url = settings.url
-          username = settings.username
-          password = settings.password
+          try{
+            val settings = new SettingsFile()
+            url = settings.url
+            username = settings.username
+            password = settings.password
+          }catch{
+            case unknown => throw new ArgException(unknown.getMessage)
+          }
         }
       }
 
@@ -111,6 +115,24 @@ object CmdApp extends LogHelper {
           logger.info("Registration completed.")
           logger.info("* Now you can go to the website and verify the registrations,\n* then confirm them.")
 
+        }
+        case "-c" :: "add-file" :: "-f" :: filename :: rest => {
+          //parse the file
+          val registrations = RegistrationsFileParser.parse( filename, new ProjectResolverImpl( client ))
+          logger.info( "Starting to add registrations:" )
+          registrations.foreach{ registration =>
+            
+            client.selectDate(registration.date)
+            //validate the date
+            if (client.selectedDate.date != registration.date) {
+              throw new ArgException("Failed setting the date: "+registration.date)
+            }
+
+            //add the registration
+            client.addRegistration(registration.project, registration.hours, registration.description)
+          }
+          logger.info( "All "+registrations.size +" registration completed." )
+          logger.info("* Now you can go to the website and verify the registrations,\n* then confirm them.")
         }
 
         case _ => {
