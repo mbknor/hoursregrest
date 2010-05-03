@@ -12,12 +12,25 @@ import org.joda.time.DateMidnight
  */
 
 object DateParser{
-    def parseDate(dateString : String ) : DateMidnight = {
-    val datePattern = "yyyy.MM.dd"
-    try{
-      return DateTimeFormat.forPattern(datePattern).parseDateTime(dateString).toDateMidnight
-    }catch{
-      case unknown => throw new Exception("Error parsing date '"+dateString+"'. Known formats: " + datePattern)
+  def parseDate(dateString : String ) : DateMidnight = {
+    val datePatterns = List("yyyy.MM.dd", "dd.MM.yyyy")
+
+    var date : DateMidnight = null
+
+    datePatterns.foreach{ datePattern =>
+      try{
+        val p = DateTimeFormat.forPattern(datePattern)
+        val d = p.parseDateTime(dateString).toDateMidnight
+        if( date == null ){
+          date = d
+        }
+      }catch{
+        case unknown => {}
+      }
     }
+    if( date != null){
+      return date
+    }
+    throw new Exception("Error parsing date '"+dateString+"'. Known formats: " + datePatterns)
   }
 }
